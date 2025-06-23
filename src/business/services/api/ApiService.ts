@@ -5,7 +5,7 @@ export class ApiService {
   private httpClient: HttpClient;
 
   private constructor() {
-    this.httpClient = new HttpClient('https://api.example.com');
+    this.httpClient = new HttpClient('https://qf5k9fspl0.execute-api.us-east-1.amazonaws.com');
   }
 
   static getInstance(): ApiService {
