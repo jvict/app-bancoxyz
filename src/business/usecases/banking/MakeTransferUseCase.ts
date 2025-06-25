@@ -11,7 +11,7 @@ export class MakeTransferUseCase implements IUseCase<TransferRequest, TransferRe
         try {
             return await this.bankingRepository.makeTransfer(request);
         } catch (error) {
-            throw new Error('Não foi possivel realizar a transferência')
+            throw new Error('Não foi possível realizar a transferência')
         }
     }
 
@@ -40,10 +40,11 @@ export class MakeTransferUseCase implements IUseCase<TransferRequest, TransferRe
 
         // Validar se a data não é no passado
         const transferDate = new Date(request.transferDate);
+        transferDate.setHours(0, 0, 0, 0);
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        if (transferDate < today) {
+        if (transferDate.getTime() < today.getTime()) {
             throw new Error('Data da transferência não pode ser no passado');
         }
     }

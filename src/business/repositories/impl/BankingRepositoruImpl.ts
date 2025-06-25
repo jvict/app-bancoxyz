@@ -73,7 +73,7 @@ export class BankingRepositoryImpl implements IBankingRepository {
         .get<TransferResponse[]>('/default/transferList');
       
       // Validar estrutura dos dados
-      const transfers = response.data.transfers;
+      const transfers = Array.isArray(response.data) ? response.data : response.data.transfers;
       
       if (!Array.isArray(transfers as any)) {
         throw new Error('Formato de dados inválido recebido do servidor');
@@ -129,7 +129,7 @@ export class BankingRepositoryImpl implements IBankingRepository {
         }
       }
       
-      if (error instanceof Error) {
+      if (error instanceof Error && error.message.includes('Formato de dados inválido')) {
         throw error;
       }
       

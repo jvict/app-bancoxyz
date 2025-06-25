@@ -7,13 +7,21 @@ export class LoginUseCase implements IUseCase<LoginRequest, AuthResponse> {
   constructor(private authRepository: IAuthRepository) {}
 
   async execute(request: LoginRequest): Promise<AuthResponse> {
-    // Validação básica
-    if (!request.email || !request.password) {
-      throw new Error('Email e senha são obrigatórios');
+    // Validação individual de campos
+    if (!request.email) {
+      throw new Error('Email é obrigatório');
+    }
+
+    if (!request.password) {
+      throw new Error('Senha é obrigatória');
     }
 
     if (!this.isValidEmail(request.email)) {
       throw new Error('Email inválido');
+    }
+
+    if (request.password.length < 6) {
+      throw new Error('Senha deve ter pelo menos 6 caracteres');
     }
 
     try {
@@ -24,7 +32,7 @@ export class LoginUseCase implements IUseCase<LoginRequest, AuthResponse> {
       
       return authResponse;
     } catch (error) {
-      throw new Error('Falha na autenticação. Verifique suas credenciais.');
+      throw new Error('Não foi possível realizar o login');
     }
   }
 

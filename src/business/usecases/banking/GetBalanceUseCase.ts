@@ -8,7 +8,7 @@ export class GetBalanceUseCase implements IUseCase<void, Balance> {
         try {
             return await this.bankingRepository.getBalance();
         } catch (error) {
-            throw new Error("Não foi possivel obter o saldo da conta");
+            throw new Error("Não foi possível obter o saldo da conta");
         }
         
     }
