@@ -68,15 +68,12 @@ const validateForm = (): boolean => {
 
         await onSubmit(transferData);
 
-              // Limpar formulário após sucesso
       setFormData({
         value: '',
         currency: 'BRL',
         payeerDocument: '',
         transferDate: '',
       });
-      
-      Alert.alert('Sucesso', 'Transferência realizada com sucesso!');
     } catch (error) {
         Alert.alert(
         'Erro',

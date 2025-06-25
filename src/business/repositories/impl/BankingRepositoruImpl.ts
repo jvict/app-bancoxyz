@@ -70,17 +70,17 @@ export class BankingRepositoryImpl implements IBankingRepository {
     try {
       const response = await this.apiService
         .getTransferListClient()
-        .get<Transfer[]>('/default/transferList');
+        .get<TransferResponse[]>('/default/transferList');
       
       // Validar estrutura dos dados
-      const transfers = response.data;
+      const transfers = response.data.transfers;
       
-      if (!Array.isArray(transfers)) {
+      if (!Array.isArray(transfers as any)) {
         throw new Error('Formato de dados inválido recebido do servidor');
       }
       
       // Validar cada transferência
-      const validatedTransfers = transfers.map((transfer, index) => {
+      const validatedTransfers = transfers.map((transfer : any , index :any) => {
         if (!transfer || typeof transfer !== 'object') {
           throw new Error(`Dados de transferência inválidos no índice ${index}`);
         }

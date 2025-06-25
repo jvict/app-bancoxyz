@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import { FlatList, ListRenderItem } from 'react-native';
-import { Transfer, TransferFilter } from '../../../../business/entities/Banking';
+import { Transfer } from '../../../../business/entities/Banking';
 import { TransferItem } from './TransferItem';
-import { TransferFilters } from './TransferFilters';
 import { 
   Container, 
   Header, 
   Title, 
-  FilterButton,
-  FilterButtonText,
   EmptyState,
   EmptyStateText
 } from './TransferList.styles';
@@ -17,24 +14,13 @@ export interface TransferListProps {
   transfers: Transfer[];
   loading?: boolean;
   onRefresh?: () => void;
-  onFilter?: (filter: TransferFilter) => void;
 }
 
 export const TransferList: React.FC<TransferListProps> = ({
   transfers,
   loading = false,
   onRefresh,
-  onFilter,
 }) => {
-  const [showFilters, setShowFilters] = useState(false);
-  const [currentFilter, setCurrentFilter] = useState<TransferFilter>({});
-
-  const handleFilter = (filter: TransferFilter) => {
-    setCurrentFilter(filter);
-    setShowFilters(false);
-    onFilter?.(filter);
-  };
-
   const renderTransferItem: ListRenderItem<Transfer> = ({ item }) => (
     <TransferItem transfer={item} />
   );
@@ -51,18 +37,7 @@ export const TransferList: React.FC<TransferListProps> = ({
     <Container>
       <Header>
         <Title>Transferências</Title>
-        <FilterButton onPress={() => setShowFilters(!showFilters)}>
-          <FilterButtonText>🔍 Filtros</FilterButtonText>
-        </FilterButton>
       </Header>
-
-      {showFilters && (
-        <TransferFilters
-          currentFilter={currentFilter}
-          onApplyFilter={handleFilter}
-          onClose={() => setShowFilters(false)}
-        />
-      )}
 
       <FlatList
         data={transfers}

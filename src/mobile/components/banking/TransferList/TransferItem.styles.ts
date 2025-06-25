@@ -44,7 +44,7 @@ export const Amount = styled(Text)`
   margin-bottom: ${theme.spacing.xs}px;
 `;
 
-export const Date = styled(Text)`
+export const TransferDate = styled(Text)` /* ← Mudei de "Date" para "TransferDate" */
   font-size: ${theme.typography.caption.fontSize}px;
   color: ${theme.colors.text.secondary};
 `;

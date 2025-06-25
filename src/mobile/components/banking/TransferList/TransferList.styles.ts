@@ -23,18 +23,6 @@ export const Title = styled(Text)`
   color: ${theme.colors.text.primary};
 `;
 
-export const FilterButton = styled(TouchableOpacity)`
-  padding: ${theme.spacing.sm}px ${theme.spacing.md}px;
-  border: 1px solid ${theme.colors.primary};
-  border-radius: ${theme.borderRadius.md}px;
-`;
-
-export const FilterButtonText = styled(Text)`
-  color: ${theme.colors.primary};
-  font-weight: 600;
-  font-size: ${theme.typography.caption.fontSize}px;
-`;
-
 export const EmptyState = styled(View)`
   flex: 1;
   justify-content: center;

@@ -3,6 +3,12 @@ export interface Balance {
   accountBalance: number;
 }
 
+// export interface TransferResponse {
+//   transfers: Transfer[];
+// }
+
+
+
 export interface Transfer {
   value: number;
   date: string; // YYYY-MM-DD
@@ -22,12 +28,5 @@ export interface TransferRequest {
 
 export interface TransferResponse {
   status: 'success' | 'error';
-}
-
-export interface TransferFilter {
-  payeerName?: string;
-  minValue?: number;
-  maxValue?: number;
-  startDate?: string;
-  endDate?: string;
+  message: string
 }

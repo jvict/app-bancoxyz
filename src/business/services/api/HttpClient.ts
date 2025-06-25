@@ -67,7 +67,7 @@ export class HttpClient {
       ...options,
       headers: {
         ...authHeaders,
-        ...options.headers, // Headers passados como parâmetro têm prioridade
+        ...options.headers,
       },
     };
 
@@ -84,7 +84,6 @@ export class HttpClient {
       }
 
       if (!response.ok) {
-        console.error('❌ Erro HTTP:', response.status, response.statusText);
         throw {
           message: `HTTP Error: ${response.status} - ${response.statusText}`,
           status: response.status,
@@ -97,18 +96,6 @@ export class HttpClient {
         statusText: response.statusText,
       };
     } catch (error) {
-      
-      if (error && typeof error === 'object' && 'status' in error) {
-        throw error; 
-      }
-      
-      if (error instanceof Error) {
-        throw {
-          message: error.message,
-          status: 0,
-        } as HttpError;
-      }
-      
       throw {
         message: 'Erro desconhecido na requisição',
         status: 0,

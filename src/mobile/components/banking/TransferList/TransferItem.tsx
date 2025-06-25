@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Transfer } from '../../../../business/entities/Banking';
-// import { FormatUtils } from '../../../utils/formatters';
 import {
   Container,
   PayeerInfo,
@@ -8,7 +7,7 @@ import {
   PayeerDocument,
   TransferDetails,
   Amount,
-  Date,
+  TransferDate, // ← Mudei de "Date" para "TransferDate"
   Currency
 } from './TransferItem.styles';
 
@@ -25,8 +24,20 @@ export const TransferItem: React.FC<TransferItemProps> = ({ transfer }) => {
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('pt-BR');
+    try {
+      const date = new Date(dateString);
+      
+      // Verificar se a data é válida
+      if (isNaN(date.getTime())) {
+        console.error('Data inválida:', dateString);
+        return 'Data inválida';
+      }
+      
+      return date.toLocaleDateString('pt-BR');
+    } catch (error) {
+      console.error('Erro ao formatar data:', error);
+      return 'Data inválida';
+    }
   };
 
   return (
@@ -38,7 +49,7 @@ export const TransferItem: React.FC<TransferItemProps> = ({ transfer }) => {
       
       <TransferDetails>
         <Amount>{formatCurrency(transfer.value, transfer.currency)}</Amount>
-        <Date>{formatDate(transfer.date)}</Date>
+        <TransferDate>{formatDate(transfer.date)}</TransferDate> {/* ← Mudei aqui */}
       </TransferDetails>
     </Container>
   );

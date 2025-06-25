@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Balance, Transfer, TransferRequest, TransferFilter } from '../../business/entities/Banking';
+import { Balance, Transfer, TransferRequest } from '../../business/entities/Banking';
 import { BankingRepositoryImpl } from '../../business/repositories/impl/BankingRepositoruImpl';
 import { GetBalanceUseCase } from '../../business/usecases/banking/GetBalanceUseCase';
 import { MakeTransferUseCase } from '../../business/usecases/banking/MakeTransferUseCase';
@@ -8,7 +8,6 @@ import { GetTransferListUseCase } from '@/business/usecases/banking/GetTransferL
 export const useBanking = () => {
   const [balance, setBalance] = useState<Balance | null>(null);
   const [transfers, setTransfers] = useState<Transfer[]>([]);
-  const [filteredTransfers, setFilteredTransfers] = useState<Transfer[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,7 +35,8 @@ export const useBanking = () => {
     setError(null);
     try {
       const result = await makeTransferUseCase.execute(transferData);
-      if (result.status === 'success') {
+      console.log("")
+      if (result) {
         // Atualizar saldo e lista de transferências após transferência bem-sucedida
         await Promise.all([getBalance(), getTransferList()]);
       }
@@ -56,20 +56,10 @@ export const useBanking = () => {
     try {
       const transferList = await getTransferListUseCase.execute();
       setTransfers(transferList);
-      setFilteredTransfers(transferList);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao obter transferências');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const filterTransfers = async (filter: TransferFilter) => {
-    try {
-      const filtered = await getTransferListUseCase.execute(filter);
-      setFilteredTransfers(filtered);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao filtrar transferências');
     }
   };
 
@@ -83,14 +73,13 @@ export const useBanking = () => {
 
   return {
     balance,
-    transfers: filteredTransfers,
+    transfers,
     allTransfers: transfers,
     loading,
     error,
     getBalance,
     makeTransfer,
     getTransferList,
-    filterTransfers,
     refreshData,
   };
 };
