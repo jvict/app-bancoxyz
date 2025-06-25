@@ -1,17 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import { Transfer } from '../../../../business/entities/Banking';
-import {
-  Container,
-  PayeerInfo,
-  PayeerName,
-  PayeerDocument,
-  TransferDetails,
-  Amount,
-  TransferDate, // ← Mudei de "Date" para "TransferDate"
-  Currency
-} from './TransferItem.styles';
 
-export interface TransferItemProps {
+interface TransferItemProps {
   transfer: Transfer;
 }
 
@@ -19,38 +10,80 @@ export const TransferItem: React.FC<TransferItemProps> = ({ transfer }) => {
   const formatCurrency = (value: number, currency: string) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
-      currency: currency === 'BRL' ? 'BRL' : 'USD',
+      currency: currency,
     }).format(value);
   };
 
   const formatDate = (dateString: string) => {
-    try {
-      const date = new Date(dateString);
-      
-      // Verificar se a data é válida
-      if (isNaN(date.getTime())) {
-        console.error('Data inválida:', dateString);
-        return 'Data inválida';
-      }
-      
-      return date.toLocaleDateString('pt-BR');
-    } catch (error) {
-      console.error('Erro ao formatar data:', error);
-      return 'Data inválida';
-    }
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR');
   };
 
   return (
-    <Container>
-      <PayeerInfo>
-        <PayeerName>{transfer.payeer.name}</PayeerName>
-        <PayeerDocument>{transfer.payeer.document}</PayeerDocument>
-      </PayeerInfo>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.payeeName}>{transfer.payeer.name}</Text>
+        <Text style={styles.amount}>
+          {formatCurrency(transfer.value, transfer.currency)}
+        </Text>
+      </View>
       
-      <TransferDetails>
-        <Amount>{formatCurrency(transfer.value, transfer.currency)}</Amount>
-        <TransferDate>{formatDate(transfer.date)}</TransferDate> {/* ← Mudei aqui */}
-      </TransferDetails>
-    </Container>
+      <View style={styles.details}>
+        <Text style={styles.document}>
+          CPF: {transfer.payeer.document}
+        </Text>
+        <Text style={styles.date}>
+          {formatDate(transfer.date)}
+        </Text>
+      </View>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#FFFFFF',
+    padding: 16,
+    marginVertical: 4,
+    marginHorizontal: 16,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  payeeName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333333',
+    flex: 1,
+  },
+  amount: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#007AFF',
+  },
+  details: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  document: {
+    fontSize: 14,
+    color: '#666666',
+  },
+  date: {
+    fontSize: 14,
+    color: '#666666',
+  },
+});

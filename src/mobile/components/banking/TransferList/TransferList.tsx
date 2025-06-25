@@ -35,9 +35,6 @@ export const TransferList: React.FC<TransferListProps> = ({
 
   return (
     <Container>
-      <Header>
-        <Title>Transferências</Title>
-      </Header>
 
       <FlatList
         data={transfers}

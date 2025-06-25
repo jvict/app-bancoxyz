@@ -33,7 +33,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title={`Olá, ${user?.name?.split(' ')[0]}!`} />
+      <Header title={`Olá, ${user?.name}!`} />
       
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <BalanceCard
