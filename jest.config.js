@@ -19,7 +19,7 @@ module.exports = {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
 transformIgnorePatterns: [
-  'node_modules/(?!(jest-)?react-native|@react-native|expo(-router|-asset|[\w-]*)|@expo|@unimodules|unimodules|sentry-expo|native-base|react-clone-referenced-element)',
+  'node_modules/(?!(jest-)?react-native|@react-native|expo(-router|-asset|-splash-screen|-constants|-font|[\w-]*)|@expo|@unimodules|unimodules|sentry-expo|native-base|react-clone-referenced-element)',
 ],
   testEnvironment: 'jsdom',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
