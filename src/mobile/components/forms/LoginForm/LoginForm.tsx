@@ -7,13 +7,11 @@ import { LoginRequest } from '../../../../business/entities/User';
 
 export interface LoginFormProps {
   onSubmit: (credentials: LoginRequest) => Promise<void>;
-  onNavigateToRegister: () => void;
   loading?: boolean;
 }
 
 export const LoginForm: React.FC<LoginFormProps> = ({
   onSubmit,
-  onNavigateToRegister,
   loading = false,
 }) => {
   const [email, setEmail] = useState('');
@@ -84,12 +82,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           loading={loading}
           fullWidth
         />
-
-        <LinkContainer>
-          <LinkText onPress={onNavigateToRegister}>
-            Não tem conta? Cadastre-se
-          </LinkText>
-        </LinkContainer>
       </Form>
     </Container>
   );

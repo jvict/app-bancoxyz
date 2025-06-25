@@ -11,19 +11,13 @@ export default function LoginScreen() {
 
   const handleLogin = async (credentials: LoginRequest) => {
     await login(credentials);
-    // router.replace('/(tabs)');
-  };
-
-  const handleNavigateToRegister = () => {
-    console.log("Tela criar usuario")
-    // router.push('/auth/register');
+    router.replace('/(tabs)');
   };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <LoginForm
         onSubmit={handleLogin}
-        onNavigateToRegister={handleNavigateToRegister}
         loading={loading}
       />
     </SafeAreaView>

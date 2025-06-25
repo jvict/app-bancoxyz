@@ -117,19 +117,4 @@ export class HttpClient {
       headers
     });
   }
-
-  async put<T>(endpoint: string, data?: any, headers?: Record<string, string>): Promise<HttpResponse<T>> {
-    return this.request<T>(endpoint, {
-      method: 'PUT',
-      body: data ? JSON.stringify(data) : undefined,
-      headers
-    });
-  }
-
-  async delete<T>(endpoint: string, headers?: Record<string, string>): Promise<HttpResponse<T>> {
-    return this.request<T>(endpoint, { 
-      method: 'DELETE',
-      headers
-    });
-  }
 }

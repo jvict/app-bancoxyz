@@ -1,4 +1,4 @@
-import { User, LoginRequest, CreateUserRequest, AuthResponse } from '../../entities/User';
+import {LoginRequest, AuthResponse } from '../../entities/User';
 import { ApiService } from '../../services/api/ApiService';
 import { IAuthRepository } from '../interefaces/IAuthRepository';
 import { HttpError } from '../../services/api/HttpClient';

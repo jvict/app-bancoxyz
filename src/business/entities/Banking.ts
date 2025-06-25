@@ -3,12 +3,6 @@ export interface Balance {
   accountBalance: number;
 }
 
-// export interface TransferResponse {
-//   transfers: Transfer[];
-// }
-
-
-
 export interface Transfer {
   value: number;
   date: string; // YYYY-MM-DD
