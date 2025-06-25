@@ -1,3 +1,5 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export interface HttpResponse<T = any> {
   data: T;
   status: number;
@@ -29,17 +31,43 @@ export class HttpClient {
     delete this.defaultHeaders.Authorization;
   }
 
+  private async getStoredToken(): Promise<string | null> {
+    try {
+      return await AsyncStorage.getItem('@auth_token');
+    } catch (error) {
+      console.error('Erro ao recuperar token:', error);
+      return null;
+    }
+  }
+
+  private async getAuthHeaders(): Promise<Record<string, string>> {
+    const headers: Record<string, string> = { ...this.defaultHeaders };
+    
+    // Se não há token nos headers padrão, tentar recuperar do AsyncStorage
+    if (!headers.Authorization) {
+      const storedToken = await this.getStoredToken();
+      if (storedToken) {
+        headers.Authorization = `Bearer ${storedToken}`;
+      }
+    }
+    
+    return headers;
+  }
+
   private async request<T>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<HttpResponse<T>> {
     const url = `${this.baseURL}${endpoint}`;
     
+    // Obter headers com token atualizado
+    const authHeaders = await this.getAuthHeaders();
+    
     const config: RequestInit = {
       ...options,
       headers: {
-        ...this.defaultHeaders,
-        ...options.headers,
+        ...authHeaders,
+        ...options.headers, // Headers passados como parâmetro têm prioridade
       },
     };
 
@@ -56,48 +84,65 @@ export class HttpClient {
       }
 
       if (!response.ok) {
+        console.error('❌ Erro HTTP:', response.status, response.statusText);
         throw {
-          message: `HTTP Error: ${response.status}`,
+          message: `HTTP Error: ${response.status} - ${response.statusText}`,
           status: response.status,
           data,
         } as HttpError;
       }
-
       return {
         data,
         status: response.status,
         statusText: response.statusText,
       };
     } catch (error) {
+      
+      if (error && typeof error === 'object' && 'status' in error) {
+        throw error; 
+      }
+      
       if (error instanceof Error) {
         throw {
           message: error.message,
           status: 0,
         } as HttpError;
       }
-      throw error;
+      
+      throw {
+        message: 'Erro desconhecido na requisição',
+        status: 0,
+      } as HttpError;
     }
   }
 
-  async get<T>(endpoint: string): Promise<HttpResponse<T>> {
-    return this.request<T>(endpoint, { method: 'GET' });
+  async get<T>(endpoint: string, headers?: Record<string, string>): Promise<HttpResponse<T>> {
+    return this.request<T>(endpoint, { 
+      method: 'GET',
+      headers
+    });
   }
 
-  async post<T>(endpoint: string, data?: any): Promise<HttpResponse<T>> {
+  async post<T>(endpoint: string, data?: any, headers?: Record<string, string>): Promise<HttpResponse<T>> {
     return this.request<T>(endpoint, {
       method: 'POST',
       body: data ? JSON.stringify(data) : undefined,
+      headers
     });
   }
 
-  async put<T>(endpoint: string, data?: any): Promise<HttpResponse<T>> {
+  async put<T>(endpoint: string, data?: any, headers?: Record<string, string>): Promise<HttpResponse<T>> {
     return this.request<T>(endpoint, {
       method: 'PUT',
       body: data ? JSON.stringify(data) : undefined,
+      headers
     });
   }
 
-  async delete<T>(endpoint: string): Promise<HttpResponse<T>> {
-    return this.request<T>(endpoint, { method: 'DELETE' });
+  async delete<T>(endpoint: string, headers?: Record<string, string>): Promise<HttpResponse<T>> {
+    return this.request<T>(endpoint, { 
+      method: 'DELETE',
+      headers
+    });
   }
 }

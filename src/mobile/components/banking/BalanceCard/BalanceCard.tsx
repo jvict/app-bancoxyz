@@ -1,3 +1,4 @@
+import React from 'react';
 import { Balance } from "@/business/entities/Banking";
 import { BalanceAmount, BalanceContainer, Container, Currency, RefreshButton, RefreshText, Title } from "./BalanceCard.styles";
 
@@ -9,7 +10,7 @@ export interface BalanceCardProps {
 
 export const BalanceCard: React.FC<BalanceCardProps> = ({balance,loading = false, onRefresh}) => {
     const formatCurrency = (value : number, currency : string) =>{
-        return new Intl.NumberFormat('[t-br',{
+        return new Intl.NumberFormat('pt-BR',{
             style: 'currency',
             currency: currency === 'BRL' ? 'BRL' : 'USD',
         }).format(value);
@@ -35,7 +36,7 @@ export const BalanceCard: React.FC<BalanceCardProps> = ({balance,loading = false
             </BalanceContainer>
             {onRefresh && (
                 <RefreshButton onPress={onRefresh} disabled={loading}>
-                    <RefreshText>Atualziar</RefreshText>
+                    <RefreshText>Atualizar</RefreshText>
                 </RefreshButton>
             )}
         </Container>

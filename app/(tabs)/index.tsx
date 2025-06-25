@@ -1,53 +1,68 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { ScrollView, StyleSheet, Alert, View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 import { Header } from '../../src/mobile/components/common/Header/Header';
+import { BalanceCard } from '../../src/mobile/components/banking/BalanceCard/BalanceCard';
+import { Card } from '../../src/mobile/components/common/Card/Card';
+
+import { Button } from '../../src/mobile/components/common/Button/Button';
 import { useAuth } from '../../src/mobile/hooks/useAuth';
+import { useBanking } from '../../src/mobile/hooks/useBanking';
 import { theme } from '../../src/mobile/styles/theme';
 
 export default function HomeScreen() {
   const { user } = useAuth();
+  const { balance, loading, getBalance, error } = useBanking();
+
+  const handleRefreshBalance = async () => {
+    try {
+      await getBalance();
+    } catch (err) {
+      Alert.alert('Erro', 'Não foi possível atualizar o saldo');
+    }
+  };
+
+  const navigateToTransfer = () => {
+    router.push('/transfer');
+  };
+
+  const navigateToTransferList = () => {
+    router.push('/transfer-list');
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Home" />
+      <Header title={`Olá, ${user?.name?.split(' ')[0]}!`} />
       
-      <ScrollView style={styles.content}>
-        <View style={styles.welcomeContainer}>
-          <Text style={styles.welcomeTitle}>
-            Bem-vindo, {user?.name}! 👋
-          </Text>
-          <Text style={styles.welcomeSubtitle}>
-            Este é seu painel principal
-          </Text>
-        </View>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        <BalanceCard
+          balance={balance}
+          loading={loading}
+          onRefresh={handleRefreshBalance}
+        />
 
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Estatísticas</Text>
-          <View style={styles.statsContainer}>
-            <View style={styles.statItem}>
-              <Text style={styles.statNumber}>42</Text>
-              <Text style={styles.statLabel}>Total</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Text style={styles.statNumber}>12</Text>
-              <Text style={styles.statLabel}>Pendentes</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Text style={styles.statNumber}>30</Text>
-              <Text style={styles.statLabel}>Concluídos</Text>
-            </View>
-          </View>
-        </View>
+        {error && (
+          <Card title="⚠️ Atenção" padding="medium">
+            <Text style={styles.errorText}>{error}</Text>
+          </Card>
+        )}
 
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Ações Rápidas</Text>
-          <View style={styles.actionsContainer}>
-            <Text style={styles.actionItem}>📊 Ver Relatórios</Text>
-            <Text style={styles.actionItem}>⚙️ Configurações</Text>
-            <Text style={styles.actionItem}>📞 Suporte</Text>
-          </View>
-        </View>
+        <Card title="Ações Rápidas" padding="large">
+          <Button
+            title="💸 Nova Transferência"
+            onPress={navigateToTransfer}
+            fullWidth
+            style={{ marginBottom: theme.spacing.md }}
+          />
+          
+          <Button
+            title="📋 Ver Transferências"
+            variant="outline"
+            onPress={navigateToTransferList}
+            fullWidth
+          />
+        </Card>
       </ScrollView>
     </SafeAreaView>
   );
@@ -60,64 +75,26 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: theme.spacing.md,
   },
-  welcomeContainer: {
-    marginBottom: theme.spacing.lg,
-  },
-  welcomeTitle: {
-    fontSize: theme.typography.h2.fontSize,
-    fontWeight: theme.typography.h2.fontWeight,
-    color: theme.colors.text.primary,
-    marginBottom: theme.spacing.sm,
-  },
-  welcomeSubtitle: {
+  errorText: {
+    color: theme.colors.error,
     fontSize: theme.typography.body.fontSize,
-    color: theme.colors.text.secondary,
+    textAlign: 'center',
   },
-  card: {
-    backgroundColor: theme.colors.surface,
-    padding: theme.spacing.lg,
-    borderRadius: theme.borderRadius.lg,
-    marginBottom: theme.spacing.md,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  cardTitle: {
-    fontSize: theme.typography.h3.fontSize,
-    fontWeight: theme.typography.h3.fontWeight,
-    color: theme.colors.text.primary,
-    marginBottom: theme.spacing.md,
-  },
-  statsContainer: {
+  summaryRow: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
+    paddingVertical: theme.spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
   },
-  statItem: {
-    alignItems: 'center',
-  },
-  statNumber: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: theme.colors.primary,
-    marginBottom: theme.spacing.xs,
-  },
-  statLabel: {
-    fontSize: theme.typography.caption.fontSize,
+  summaryLabel: {
+    fontSize: theme.typography.body.fontSize,
     color: theme.colors.text.secondary,
   },
-  actionsContainer: {
-    gap: theme.spacing.md,
-  },
-  actionItem: {
+  summaryValue: {
     fontSize: theme.typography.body.fontSize,
     color: theme.colors.text.primary,
-    paddingVertical: theme.spacing.sm,
-    paddingHorizontal: theme.spacing.md,
-    backgroundColor: theme.colors.background,
-    borderRadius: theme.borderRadius.md,
+    fontWeight: '600',
   },
 });

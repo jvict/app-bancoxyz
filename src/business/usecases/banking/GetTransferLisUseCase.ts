@@ -4,7 +4,7 @@ import { IBankingRepository } from "@/business/repositories/interefaces/IBanking
 
 export class GetTransferListUseCase implements IUseCase<TransferFilter | void, Transfer[]>{
     constructor(private bankingRepository : IBankingRepository) {}
-    async execute(filters: TransferFilter ): Promise<Transfer[]> {
+    async execute(filters?: TransferFilter ): Promise<Transfer[]> {
         try {
             const transfers = await this.bankingRepository.getTransferList();
 
