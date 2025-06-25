@@ -45,7 +45,7 @@ npm install -g @expo/cli
 
 1. **Clone o repositório:**
 ```bash
-git clone https://github.com/seu-usuario/app-bancoxyz.git
+git clone https://github.com/jvict/app-bancoxyz.git
 cd app-bancoxyz
 ```
 
