@@ -1,6 +1,6 @@
-import { MakeTransferUseCase } from '../MakeTransferUseCase.js';
-import { IBankingRepository } from '../../../repositories/interefaces/IBankingRepository.js';
-import { TransferRequest, TransferResponse } from '../../../entities/Banking.js';
+import { MakeTransferUseCase } from '../MakeTransferUseCase';
+import { IBankingRepository } from '../../../repositories/interefaces/IBankingRepository';
+import { TransferRequest, TransferResponse } from '../../../entities/Banking';
 
 describe('MakeTransferUseCase', () => {
   let mockBankingRepository: jest.Mocked<IBankingRepository>;
@@ -20,16 +20,24 @@ describe('MakeTransferUseCase', () => {
   });
 
   describe('execute', () => {
+    // Use uma data futura para evitar problemas com validação
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 7); // 7 dias no futuro
+    const futureDateString = futureDate.toISOString().split('T')[0];
+    
     const validTransferRequest: TransferRequest = {
       value: 100.50,
       currency: 'BRL',
       payeerDocument: '12345678901',
-      transferDate: '2024-12-31',
+      transferDate: futureDateString,
     };
 
     it('should return success response when transfer is valid', async () => {
       // Arrange
-      const mockResponse: TransferResponse = { status: 'success', message: 'Ok, Transferencia concluida com sucesso'};
+      const mockResponse: TransferResponse = { 
+        status: 'success', 
+        message: 'Ok, Transferencia concluida com sucesso'
+      };
       mockBankingRepository.makeTransfer.mockResolvedValue(mockResponse);
 
       // Act
@@ -100,9 +108,16 @@ describe('MakeTransferUseCase', () => {
 
     it('should accept today as transfer date', async () => {
       // Arrange
-      const today = new Date().toISOString().split('T')[0];
-      const validRequest = { ...validTransferRequest, transferDate: today };
-      const mockResponse: TransferResponse = { status: 'success', message: 'Ok, transferência concluida com sucesso'};
+      const mockDate = new Date('2024-06-25T12:00:00.000Z');
+      const spy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate as any);
+      (spy as any).now = jest.fn(() => mockDate.getTime());
+      
+      const todayString = '2024-06-25';
+      const validRequest = { ...validTransferRequest, transferDate: todayString };
+      const mockResponse: TransferResponse = { 
+        status: 'success', 
+        message: 'Ok, transferência concluida com sucesso'
+      };
       mockBankingRepository.makeTransfer.mockResolvedValue(mockResponse);
 
       // Act
@@ -110,6 +125,9 @@ describe('MakeTransferUseCase', () => {
 
       // Assert
       expect(result).toEqual(mockResponse);
+      
+      // Restore
+      spy.mockRestore();
     });
 
     it('should throw error when repository call fails', async () => {

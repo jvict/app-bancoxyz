@@ -1,7 +1,6 @@
-import { GetBalanceUseCase } from '../GetBalanceUseCase.js';
-import { IBankingRepository } from '../../../repositories/interefaces/IBankingRepository.js';
-import { Balance } from '@/business/entities/Banking.js';
-
+import { GetBalanceUseCase } from '../GetBalanceUseCase';
+import { IBankingRepository } from '../../../repositories/interefaces/IBankingRepository';
+import { Balance } from '../../../entities/Banking';
 
 describe('GetBalanceUseCase', () => {
   let mockBankingRepository: jest.Mocked<IBankingRepository>;

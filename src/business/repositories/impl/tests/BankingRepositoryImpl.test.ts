@@ -93,75 +93,98 @@ describe('BankingRepositoryImpl', () => {
     it('should return success response when transfer succeeds', async () => {
       mockHttpClient.post.mockResolvedValue({
         data: mockResponse,
-        status: 200, statusText: 'OK', });
+        status: 200, 
+        statusText: 'OK', 
+      });
 
-  const result = await bankingRepository.makeTransfer(transferRequest);
+      const result = await bankingRepository.makeTransfer(transferRequest);
 
-  expect(result).toEqual(mockResponse);
-  expect(mockHttpClient.post).toHaveBeenCalledWith(
-    '/default/transfer',
-    transferRequest
-  );
-});
+      expect(result).toEqual(mockResponse);
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        '/default/transfer',
+        transferRequest
+      );
+    });
 
-it('should throw error for 400 status (Bad Request)', async () => {
-  const httpError: HttpError = {
-    message: 'Bad Request',
-    status: 400,
-  };
-  mockHttpClient.post.mockRejectedValue(httpError);
+    it('should throw error for 400 status (Bad Request)', async () => {
+      const httpError: HttpError = {
+        message: 'Bad Request',
+        status: 400,
+      };
+      mockHttpClient.post.mockRejectedValue(httpError);
 
-  await expect(
-    bankingRepository.makeTransfer(transferRequest)
-  ).rejects.toThrow('Dados de transferência inválidos');
+      await expect(
+        bankingRepository.makeTransfer(transferRequest)
+      ).rejects.toThrow('Dados de transferência inválidos');
 
-  expect(mockHttpClient.post).toHaveBeenCalledWith(
-    '/default/transfer',
-    transferRequest
-  );
-});
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        '/default/transfer',
+        transferRequest
+      );
+    });
 
-it('should throw general error for non-HTTP issues', async () => {
-  mockHttpClient.post.mockRejectedValue(new Error('Network error'));
+    it('should throw general error for non-HTTP issues', async () => {
+      mockHttpClient.post.mockRejectedValue(new Error('Network error'));
 
-  await expect(
-    bankingRepository.makeTransfer(transferRequest)
-  ).rejects.toThrow('Não foi possível realizar a transferência');
-});
-});
-
-describe('getTransferList', () => { const mockTransfers = [ { value: 100.5, date: '2024-01-30', currency: 'BRL', payeer: { name: 'João Silva', document: '12345678901', }, }, { value: 50.25, date: '2024-02-01', currency: 'USD', payeer: { name: 'Maria Santos', document: '98765432100', }, }, ];
-
-it('should return transfer list when the API succeeds', async () => {
-  mockHttpClient.get.mockResolvedValue({
-    data: mockTransfers,
-    status: 200,
-    statusText: 'OK',
+      await expect(
+        bankingRepository.makeTransfer(transferRequest)
+      ).rejects.toThrow('Não foi possível realizar a transferência');
+    });
   });
 
-  const result = await bankingRepository.getTransferList();
+  describe('getTransferList', () => { 
+    const mockTransfers = [ 
+      { 
+        value: 100.5, 
+        date: '2024-01-30', 
+        currency: 'BRL', 
+        payeer: { 
+          name: 'João Silva', 
+          document: '12345678901', 
+        }, 
+      }, 
+      { 
+        value: 50.25, 
+        date: '2024-02-01', 
+        currency: 'USD', 
+        payeer: { 
+          name: 'Maria Santos', 
+          document: '98765432100', 
+        }, 
+      }, 
+    ];
 
-  expect(result).toEqual(mockTransfers);
-  expect(mockHttpClient.get).toHaveBeenCalledWith('/default/transferList');
+    it('should return transfer list when the API succeeds', async () => {
+      mockHttpClient.get.mockResolvedValue({
+        data: mockTransfers,
+        status: 200,
+        statusText: 'OK',
+      });
+
+      const result = await bankingRepository.getTransferList();
+
+      expect(result).toEqual(mockTransfers);
+      expect(mockHttpClient.get).toHaveBeenCalledWith('/default/transferList');
+    });
+
+    it('should throw error if the API returns an invalid response format', async () => {
+      mockHttpClient.get.mockResolvedValue({
+        data: { invalid: 'data' },
+        status: 200,
+        statusText: 'OK',
+      });
+
+      await expect(
+        bankingRepository.getTransferList()
+      ).rejects.toThrow('Formato de dados inválido recebido do servidor');
+    });
+
+    it('should throw error for non-HTTP issues', async () => {
+      mockHttpClient.get.mockRejectedValue(new Error('Network error'));
+
+      await expect(
+        bankingRepository.getTransferList()
+      ).rejects.toThrow('Não foi possível obter a lista de transferências');
+    });
+  }); 
 });
-
-it('should throw error if the API returns an invalid response format', async () => {
-  mockHttpClient.get.mockResolvedValue({
-    data: { invalid: 'data' },
-    status: 200,
-    statusText: 'OK',
-  });
-
-  await expect(
-    bankingRepository.getTransferList()
-  ).rejects.toThrow('Formato de dados inválido recebido do servidor');
-});
-
-it('should throw error for non-HTTP issues', async () => {
-  mockHttpClient.get.mockRejectedValue(new Error('Network error'));
-
-  await expect(
-    bankingRepository.getTransferList()
-  ).rejects.toThrow('Não foi possível obter a lista de transferências');
-});
-}); });

@@ -19,4 +19,11 @@ describe('Jest Setup', () => {
     const formatter = new Intl.NumberFormat('pt-BR');
     expect(formatter.format).toBeDefined();
   });
+
+  it('should have React Native components mocked', () => {
+    const RN = require('react-native');
+    expect(RN.Alert).toBeDefined();
+    expect(RN.Dimensions).toBeDefined();
+    expect(RN.PixelRatio).toBeDefined();
+  });
 });

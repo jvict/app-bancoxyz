@@ -9,12 +9,12 @@ describe('LoginUseCase', () => {
   beforeEach(() => {
     mockAuthRepository = {
       login: jest.fn(),
-      register: jest.fn(),
-      logout: jest.fn(),
-      getCurrentUser: jest.fn(),
-      refreshToken: jest.fn(),
     };
     loginUseCase = new LoginUseCase(mockAuthRepository);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('execute', () => {
@@ -28,6 +28,8 @@ describe('LoginUseCase', () => {
         id: '1',
         name: 'Test User',
         email: 'test@example.com',
+        createdAt: undefined,
+        updatedAt: undefined
       },
       token: 'fake-jwt-token',
     };
