@@ -21,27 +21,25 @@ describe('GetBalanceUseCase', () => {
 
   describe('execute', () => {
     it('should return balance when repository call succeeds', async () => {
-      // Arrange
+
       const mockBalance: Balance = {
         currency: 'BRL',
         accountBalance: 1000.50,
       };
       mockBankingRepository.getBalance.mockResolvedValue(mockBalance);
 
-      // Act
       const result = await getBalanceUseCase.execute();
 
-      // Assert
       expect(result).toEqual(mockBalance);
       expect(mockBankingRepository.getBalance).toHaveBeenCalledTimes(1);
     });
 
     it('should throw error when repository call fails', async () => {
-      // Arrange
+
       const errorMessage = 'Repository error';
       mockBankingRepository.getBalance.mockRejectedValue(new Error(errorMessage));
 
-      // Act & Assert
+    
       await expect(getBalanceUseCase.execute()).rejects.toThrow(
         'Não foi possível obter o saldo da conta'
       );
@@ -49,10 +47,9 @@ describe('GetBalanceUseCase', () => {
     });
 
     it('should handle network errors', async () => {
-      // Arrange
+   
       mockBankingRepository.getBalance.mockRejectedValue(new TypeError('Network error'));
 
-      // Act & Assert
       await expect(getBalanceUseCase.execute()).rejects.toThrow(
         'Não foi possível obter o saldo da conta'
       );

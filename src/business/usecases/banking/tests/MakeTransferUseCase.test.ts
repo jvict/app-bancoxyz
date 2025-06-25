@@ -33,26 +33,26 @@ describe('MakeTransferUseCase', () => {
     };
 
     it('should return success response when transfer is valid', async () => {
-      // Arrange
+
       const mockResponse: TransferResponse = { 
         status: 'success', 
         message: 'Ok, Transferencia concluida com sucesso'
       };
       mockBankingRepository.makeTransfer.mockResolvedValue(mockResponse);
 
-      // Act
+
       const result = await makeTransferUseCase.execute(validTransferRequest);
 
-      // Assert
+
       expect(result).toEqual(mockResponse);
       expect(mockBankingRepository.makeTransfer).toHaveBeenCalledWith(validTransferRequest);
     });
 
     it('should throw error when value is zero or negative', async () => {
-      // Arrange
+
       const invalidRequest = { ...validTransferRequest, value: 0 };
 
-      // Act & Assert
+
       await expect(makeTransferUseCase.execute(invalidRequest)).rejects.toThrow(
         'Valor da transferência deve ser maior que zero'
       );
@@ -107,7 +107,7 @@ describe('MakeTransferUseCase', () => {
     });
 
     it('should accept today as transfer date', async () => {
-      // Arrange
+
       const mockDate = new Date('2024-06-25T12:00:00.000Z');
       const spy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate as any);
       (spy as any).now = jest.fn(() => mockDate.getTime());
@@ -120,21 +120,20 @@ describe('MakeTransferUseCase', () => {
       };
       mockBankingRepository.makeTransfer.mockResolvedValue(mockResponse);
 
-      // Act
+
       const result = await makeTransferUseCase.execute(validRequest);
 
-      // Assert
+
       expect(result).toEqual(mockResponse);
       
-      // Restore
+
       spy.mockRestore();
     });
 
     it('should throw error when repository call fails', async () => {
-      // Arrange
+
       mockBankingRepository.makeTransfer.mockRejectedValue(new Error('Repository error'));
 
-      // Act & Assert
       await expect(makeTransferUseCase.execute(validTransferRequest)).rejects.toThrow(
         'Não foi possível realizar a transferência'
       );

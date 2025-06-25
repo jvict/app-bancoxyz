@@ -7,7 +7,6 @@ export class LoginUseCase implements IUseCase<LoginRequest, AuthResponse> {
   constructor(private authRepository: IAuthRepository) {}
 
   async execute(request: LoginRequest): Promise<AuthResponse> {
-    // Validação individual de campos
     if (!request.email) {
       throw new Error('Email é obrigatório');
     }
@@ -26,10 +25,7 @@ export class LoginUseCase implements IUseCase<LoginRequest, AuthResponse> {
 
     try {
       const authResponse = await this.authRepository.login(request);
-      
-      // Configurar token para próximas requisições
       ApiService.getInstance().setAuthToken(authResponse.token);
-      
       return authResponse;
     } catch (error) {
       throw new Error('Não foi possível realizar o login');

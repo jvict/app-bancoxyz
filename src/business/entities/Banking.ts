@@ -5,7 +5,7 @@ export interface Balance {
 
 export interface Transfer {
   value: number;
-  date: string; // YYYY-MM-DD
+  date: string; 
   currency: string;
   payeer: {
     document: string;
@@ -17,7 +17,7 @@ export interface TransferRequest {
   value: number;
   currency: string;
   payeerDocument: string;
-  transferDate: string; // YYYY-MM-DD
+  transferDate: string; 
 }
 
 export interface TransferResponse {
