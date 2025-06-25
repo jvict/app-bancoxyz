@@ -3,22 +3,27 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
   testMatch: [
     '**/__tests__/**/*.(test|spec).(js|jsx|ts|tsx)',
-    '**/*.(test|spec).(js|jsx|ts|tsx)'
+    '**/*.(test|spec).(js|jsx|ts|tsx)',
   ],
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',
     '!src/**/*.d.ts',
     '!src/**/*.styles.ts',
     '!src/**/index.ts',
+    '!src/**/*.stories.tsx',
+    '!src/__tests__/setup.ts',
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
-    '^@/business/(.*)$': '<rootDir>/src/business/$1',
-    '^@/mobile/(.*)$': '<rootDir>/src/mobile/$1',
   },
-  transformIgnorePatterns: [
-    'node_modules/(?!(jest-)?react-native|@react-native|expo|@expo|@unimodules|unimodules|sentry-expo|native-base|react-clone-referenced-element)',
-  ],
+transformIgnorePatterns: [
+  'node_modules/(?!(jest-)?react-native|@react-native|expo(-router|-asset|[\w-]*)|@expo|@unimodules|unimodules|sentry-expo|native-base|react-clone-referenced-element)',
+],
+  testEnvironment: 'jsdom',
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
+  transform: {
+    '^.+\.(js|jsx|ts|tsx)$': 'babel-jest',
+  },
 };
